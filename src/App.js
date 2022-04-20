@@ -7,6 +7,7 @@ function App() {
   const [batteryLevel, setBatteryLevel] = useState(null);
   const Arduino1Service = "2384bddc-886f-11ec-a8a3-0242ac120000";
   const Arduino1Control = "2384bddc-886f-11ec-a8a3-0242ac120001";
+  //Don't have IDs for Ard. 2 yet
 
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
@@ -31,10 +32,6 @@ function App() {
     setBatteryLevel(event.target.value.getUint8(0) + '%');
   }
 
-  /**
-   * Attempts to connect to a Bluetooth device and subscribe to
-   * battery level readings using the battery service.
-   */
   const connectToDeviceAndSubscribeToUpdatesArduino1 = async () => {
     try {
       // Search for Bluetooth devices that advertise a battery service
@@ -51,20 +48,20 @@ function App() {
       // Try to connect to the remote GATT Server running on the Bluetooth device
       const server = await device.gatt.connect();
 
-      // Get the battery service from the Bluetooth device
+      // Get the service from the Bluetooth device
       const service = await server.getPrimaryService(Arduino1Service);
 
-      // Get the battery level characteristic from the Bluetooth device
+      // Get the characteristic from the Bluetooth device
       const characteristic = await service.getCharacteristic(Arduino1Control);
 
-      // Subscribe to battery level notifications
+      // Subscribe to  notifications
       characteristic.startNotifications();
 
-      // When the battery level changes, call a function
+      // When the changes, call a function
       characteristic.addEventListener('characteristicvaluechanged',
                                   handleCharacteristicValueChanged);
       
-      // Read the battery level value
+      // Read the value
       const reading = await characteristic.readValue();
 
       // Show the initial reading on the web page
@@ -92,7 +89,7 @@ function App() {
 
   const connectToDeviceAndSubscribeToUpdatesArduino2 = async () => {
     try {
-      // Search for Bluetooth devices that advertise a battery service
+      // Search for Bluetooth devices that advertise a specific service
       const device = await navigator.bluetooth
         .requestDevice({
           filters: [{services: [Arduino1Service]}]
@@ -106,20 +103,20 @@ function App() {
       // Try to connect to the remote GATT Server running on the Bluetooth device
       const server = await device.gatt.connect();
 
-      // Get the battery service from the Bluetooth device
+      // Get the ervice from the Bluetooth device
       const service = await server.getPrimaryService(Arduino1Service);
 
-      // Get the battery level characteristic from the Bluetooth device
+      // Get the  characteristic from the Bluetooth device
       const characteristic = await service.getCharacteristic(Arduino1Control);
 
-      // Subscribe to battery level notifications
+      // Subscribe to notifications
       characteristic.startNotifications();
 
-      // When the battery level changes, call a function
+      // When the  changes, call a function
       characteristic.addEventListener('characteristicvaluechanged',
                                   handleCharacteristicValueChanged);
       
-      // Read the battery level value
+      // Read the value
       const reading = await characteristic.readValue();
 
       // Show the initial reading on the web page
@@ -151,20 +148,20 @@ function App() {
       {supportsBluetooth && !isDisconnected &&
         <div>
         <button onClick={MoveUpArduino1}>Move Arduino 1</button>
-            <p>Battery level: {batteryLevel}</p>
+            <p>Characteristic Value: {batteryLevel}</p>
         </div>
       }
       {supportsBluetooth && !isDisconnected &&
         <div>
-        <button onClick={MoveUpArduino1}>Move Arduino 2</button>
-            <p>Battery level: {batteryLevel}</p>
+        <button onClick={MoveUpArduino2}>Move Arduino 2</button>
+            <p>Characteristic Value: {batteryLevel}</p>
         </div>
       }
       {supportsBluetooth && isDisconnected &&
         <button onClick={connectToDeviceAndSubscribeToUpdatesArduino1}>Connect to Arduino 1</button>
       }
       {supportsBluetooth && isDisconnected &&
-        <button onClick={connectToDeviceAndSubscribeToUpdatesArduino1}>Connect to Arduino 2</button>
+        <button onClick={connectToDeviceAndSubscribeToUpdatesArduino2}>Connect to Arduino 2</button>
       }
       {!supportsBluetooth &&
         <p>This browser doesn't support the Web Bluetooth API</p>
