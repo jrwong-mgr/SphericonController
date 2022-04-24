@@ -79,7 +79,7 @@ function App() {
       const server = await device.gatt.connect();
       const service = await server.getPrimaryService(Arduino1Service);
       const characteristic = await service.getCharacteristic(Arduino1Control);
-      device.writeCharacteristicWithResponseForService(Arduino1Service, Arduino1Control, Buffer.from("22").toString("base64"));
+      characteristic.writeValueWithoutResponse(22);
 
 
     } catch(error) {
